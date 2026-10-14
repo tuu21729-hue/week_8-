@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Start Stop Fun</title>
+    </head>
+    <body>
+        <button id = "Start1">Ohio</button>
+        <button id = "Stop1">Stop</button>
+
+         <script>
+            const ctx = new AudioContext();
+
+            const oscillator = new OscillatorNode(ctx);
+            oscillator.frequency.value = 220;
+            oscillator.type = "sawtooth";
+
+            const oscillatorGain = new GainNode(ctx);
+            oscillatorGain.gain.value = 0.1;
+            oscillator.connect(oscillatorGain);
+            oscillatorGain.connect(ctx.destination);
+
+
+            const lowPassFilter = new BiquadFilterNode(ctx)
+            lowPassFilter.type = 'lowpass';
+            lowPassFilter.frequency.value = 400;
+            lowPassFilter.Q.value = 10;
+
+            oscillator.connect(lowPassFilter);
+            lowPassFilter.connect(oscillatorGain);
+            oscillatorGain.connect(ctx.destination);
+
+            const modulator = new OscillatorNode(ctx);
+            modulator.frequency.value = 100;
+            const modulatorGain = new GainNode(ctx);
+            modulator.connect(modulatorGain);
+            modulatorGain.connect(lowPassFilter.frequency);
+
+            oscillator.start();
+            modulator.start();
+
+
+
+
+
+         </script>
+
+          </body>
+</html>

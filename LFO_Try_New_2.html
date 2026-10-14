@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Start Stop Fun</title>
+    </head>
+    <body>
+        <button id = "Start1">Ohio</button>
+        <button id = "Stop1">Stop</button>
+
+         <script>
+
+
+// 1. Initialize the Audio Context
+const ctx = new AudioContext();
+
+// 2. Create the main audio source (e.g., a sawtooth wave)
+const mainOsc = new OscillatorNode(ctx);
+mainOsc.type = 'sawtooth';
+mainOsc.frequency.value = 55;
+
+// 3. Create the Low-Pass Filter
+const lpFilter = new BiquadFilterNode(ctx);
+lpFilter.type = 'lowpass';
+lpFilter.frequency = 800; // Base cutoff frequency
+lpFilter.Q = 8;           // Add resonance for a more noticeable sweep
+
+// 4. Create the LFO (Low Frequency Oscillator)
+const lfo = new OscillatorNode(ctx);
+lfo.type = 'sine'; 
+lfo.frequency.value = 0.125; // Speed of modulation (3 Hz / 3 times per second)
+
+// 5. Create the LFO Gain Node to control modulation depth
+const lfoDepth = new GainNode(ctx);
+lfoDepth.gain.value = 8000; // Modulates the cutoff by +/- 500Hz (Sweep range: 300Hz to 1300Hz)
+
+// 6. Connect the modulation graph
+lfo.connect(lfoDepth);
+lfoDepth.connect(lpFilter.frequency); // Target the filter's frequency parameter
+
+// 7. Connect the main audio signal path
+mainOsc.connect(lpFilter);
+lpFilter.connect(ctx.destination);
+
+// 8. Start both oscillators
+mainOsc.start();
+lfo.start();
+
+ </script>
+    
+    </body>
+</html>

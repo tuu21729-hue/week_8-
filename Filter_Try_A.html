@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <title> Start Stop Fun</title>
+    </head>
+    <body>
+        <button id = "Start1">Ohio</button>
+        <button id = "Stop1">Stop</button>
+        <button id = "Start2">Start</button>
+        <button id = "Stop2">Stop</button>
+        <button id = "Start3">Start</button>
+        <button id = "Stop3">Stop</button>
+         <button id = "Start4">Start</button>
+        <button id = "Stop4">Stop</button>
+    <script>
+
+        const ctx = new AudioContext()
+
+        const myGain = new GainNode(ctx);
+        myGain.gain.value = 0.125;
+
+
+        myGain.connect(lowPassFilter);
+        lowPassFilter.connect(ctx.destination);
+
+        document.querySelector("#Start1").onclick = () =>
+    {
+        ctx.resume();
+        
+        let freq = 110
+
+        osc1 = new OscillatorNode (ctx)
+        osc1.frequency.value = freq
+        osc1.type = "sawtooth"
+
+        osc2 = new OscillatorNode (ctx)
+        osc2.frequency.value = freq * 1.001
+        osc2.type = "sawtooth"
+
+        osc3 = new OscillatorNode (ctx)
+        osc3.frequency.value = freq * 0.999
+        osc3.type = "sawtooth"
+
+        osc1.connect(myGain)
+        osc2.connect(myGain)
+        osc3.connect(myGain)
+
+        osc1.start()
+        osc2.start()
+        osc3.start()
+    }
+
+    document.querySelector("#Stop1").onclick = () =>
+
+    {
+
+        osc1.stop()
+        osc2.stop()
+        osc3.stop()
+       
+    }
+
+       document.querySelector("#Start2").onclick = () =>
+    {
+        ctx.resume();
+        osc4 = new OscillatorNode (ctx)
+        osc4.frequency.value = 165
+        osc4.type = "triangle"
+
+        osc5 = new OscillatorNode (ctx)
+        osc5.frequency.value = 165 * 1.001
+        osc5.type = "triangle"
+
+        osc6 = new OscillatorNode (ctx)
+        osc6.frequency.value = 165 * 0.999
+        osc6.type = "triangle"
+
+        osc4.connect(myGain)
+        osc5.connect(myGain)
+        osc6.connect(myGain)
+
+        osc4.start()
+        osc5.start()
+        osc6.start()
+    }
+
+    document.querySelector("#Stop2").onclick = () =>
+
+    {
+
+        osc4.stop()
+        osc5.stop()
+        osc6.stop()
+       
+    }
+
+       document.querySelector("#Start3").onclick = () =>
+    {
+        let freq = 175
+        
+        ctx.resume();
+        osc7 = new OscillatorNode (ctx)
+        osc7.frequency.value = freq
+        osc7.type = "triangle"
+
+        osc8 = new OscillatorNode (ctx)
+        osc8.frequency.value = freq * 1.001
+        osc8.type = "triangle"
+
+        osc9 = new OscillatorNode (ctx)
+        osc9.frequency.value = freq * 0.999
+        osc9.type = "triangle"
+
+        osc7.connect(myGain)
+        osc8.connect(myGain)
+        osc9.connect(myGain)
+
+        osc7.start()
+        osc8.start()
+        osc9.start()
+    }
+
+    document.querySelector("#Stop3").onclick = () =>
+
+    {
+
+        osc7.stop()
+        osc8.stop()
+        osc9.stop()
+       
+    }
+
+       document.querySelector("#Start4").onclick = () =>
+    {
+        let freq = 330
+        
+        ctx.resume();
+        osc10 = new OscillatorNode (ctx)
+        osc10.frequency.value = freq
+        osc10.type = "triangle"
+
+        osc11 = new OscillatorNode (ctx)
+        osc11.frequency.value = freq * 1.001
+        osc11.type = "triangle"
+
+        osc12 = new OscillatorNode (ctx)
+        osc12.frequency.value = freq * 0.999
+        osc12.type = "triangle"
+
+        osc10.connect(myGain)
+        osc11.connect(myGain)
+        osc12.connect(myGain)
+
+        osc10.start()
+        osc11.start()
+        osc12.start()
+    }
+
+    document.querySelector("#Stop4").onclick = () =>
+
+    {
+
+        osc10.stop()
+        osc11.stop()
+        osc12.stop()
+       
+    }
+    </script>
+    
+    </body>
+</html>
