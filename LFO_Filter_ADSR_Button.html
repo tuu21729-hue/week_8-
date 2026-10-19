@@ -1,74 +1,174 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset = "UTF-8">
-    <title> Start Stop Fun</title>
-    </head>
-    <body>
-        <button id = "Start1">Start1</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Start Stop Fun</title>
+  </head>
+  <body>
+    <button id="Start1">Start1</button>
+    <input id="range1" type="range" min="50" max="500" value="200" />
+    <input id="cutoff1" type="range" min="100" max="2000" value="500" />
 
-         <script>
+    <button id="Start2">Start2</button>
+    <input id="range2" type="range" min="100" max="700" value="300" />
+    <input id="cutoff2" type="range" min="200" max="3000" value="1000" />
 
-const adsrSwell = function()
-{
-    mainOsc.frequency.value = Math.random() * 200 + 100;
-    
-    ctx.resume();
+    <button id="Start3">Start3</button>
+    <input id="range3" type="range" min="200" max="1000" value="400" />
+    <input id="cutoff3" type="range" min="300" max="4000" value="1500" />
 
-    let now = ctx.currentTime;
+    <script>
+      const ctx = new AudioContext();
 
-    adsr.gain.setValueAtTime(0, now);
-    adsr.gain.linearRampToValueAtTime(1, now + 1.5);
-    adsr.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+      const mainOsc1 = ctx.createOscillator();
+      const filter1 = ctx.createBiquadFilter();
+      const lfo1 = ctx.createOscillator();
+      const lfoGain1 = ctx.createGain();
+      const adsr1 = ctx.createGain();
 
-};
+      mainOsc1.type = "sawtooth";
+      mainOsc1.frequency.value = 200;
 
-// 1. Initialize the Audio Context
-const ctx = new AudioContext();
+      filter1.type = "bandpass";
+      filter1.frequency.value = 500;
 
-// 2. Create the main audio source (e.g., a sawtooth wave)
-const mainOsc = new OscillatorNode(ctx);
-mainOsc.type = 'sawtooth';
+      lfo1.frequency.value = 2;
+      lfoGain1.gain.value = 200;
 
-// 3. Create the Low-Pass Filter
-const lpFilter = new BiquadFilterNode(ctx);
-lpFilter.type = 'lowpass';
-lpFilter.frequency = 800; // Base cutoff frequency
-lpFilter.Q = 8;           // Add resonance for a more noticeable sweep
+      adsr1.gain.value = 0;
 
-// 4. Create the LFO (Low Frequency Oscillator)
-const lfo = new OscillatorNode(ctx);
-lfo.type = 'sine'; 
-lfo.frequency.value = 4; // Speed of modulation (3 Hz / 3 times per second)
+      mainOsc1.connect(filter1);
+      filter1.connect(adsr1);
+      adsr1.connect(ctx.destination);
 
-// 5. Create the LFO Gain Node to control modulation depth
-const lfoDepth = new GainNode(ctx);
-lfoDepth.gain.value = 10000; // Modulates the cutoff by +/- 500Hz (Sweep range: 300Hz to 1300Hz)
+      lfo1.connect(lfoGain1);
+      lfoGain1.connect(filter1.frequency);
 
-// 6. Connect the modulation graph
-lfo.connect(lfoDepth);
-lfoDepth.connect(lpFilter.frequency); // Target the filter's frequency parameter
+      mainOsc1.start();
+      lfo1.start();
 
-const adsr = new GainNode(ctx);
-adsr.gain.value = 0;
+      const adsrSwell1 = function () {
+        mainOsc1.frequency.value = Math.random() * 200 + 100;
 
-const master = new GainNode(ctx);
+        ctx.resume();
 
-// 7. Connect the main audio signal path
-mainOsc.connect(lpFilter);
-lpFilter.connect(adsr);
-adsr.connect(master);
-master.connect(ctx.destination);
+        let now = ctx.currentTime;
 
-// 8. Start both oscillators
-mainOsc.start();
-lfo.start();
+        adsr1.gain.cancelScheduledValues(now);
+        adsr1.gain.setValueAtTime(0, now);
+        adsr1.gain.linearRampToValueAtTime(0.3, now + 1.5);
+        adsr1.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+      };
 
-const theClickButton = document.querySelector("#Start1");
+      document.getElementById("Start1").addEventListener("click", adsrSwell1);
 
-theClickButton.addEventListener("click", adsrSwell);
+      document.getElementById("range1").addEventListener("input", function () {
+        lfoGain1.gain.value = this.value;
+      });
 
- </script>
-    
-    </body>
+      document.getElementById("cutoff1").addEventListener("input", function () {
+        filter1.frequency.value = this.value;
+      });
+
+      const mainOsc2 = ctx.createOscillator();
+      const filter2 = ctx.createBiquadFilter();
+      const lfo2 = ctx.createOscillator();
+      const lfoGain2 = ctx.createGain();
+      const adsr2 = ctx.createGain();
+
+      mainOsc2.type = "square";
+      mainOsc2.frequency.value = 300;
+
+      filter2.type = "bandpass";
+      filter2.frequency.value = 1000;
+
+      lfo2.frequency.value = 4;
+      lfoGain2.gain.value = 300;
+
+      adsr2.gain.value = 0;
+
+      mainOsc2.connect(filter2);
+      filter2.connect(adsr2);
+      adsr2.connect(ctx.destination);
+
+      lfo2.connect(lfoGain2);
+      lfoGain2.connect(filter2.frequency);
+
+      mainOsc2.start();
+      lfo2.start();
+
+      const adsrSwell2 = function () {
+        mainOsc2.frequency.value = Math.random() * 300 + 300;
+
+        ctx.resume();
+
+        let now = ctx.currentTime;
+
+        adsr2.gain.cancelScheduledValues(now);
+        adsr2.gain.setValueAtTime(0, now);
+        adsr2.gain.linearRampToValueAtTime(0.3, now + 1.5);
+        adsr2.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+      };
+
+      document.getElementById("Start2").addEventListener("click", adsrSwell2);
+
+      document.getElementById("range2").addEventListener("input", function () {
+        lfoGain2.gain.value = this.value;
+      });
+
+      document.getElementById("cutoff2").addEventListener("input", function () {
+        filter2.frequency.value = this.value;
+      });
+
+      const mainOsc3 = ctx.createOscillator();
+      const filter3 = ctx.createBiquadFilter();
+      const lfo3 = ctx.createOscillator();
+      const lfoGain3 = ctx.createGain();
+      const adsr3 = ctx.createGain();
+
+      mainOsc3.type = "triangle";
+      mainOsc3.frequency.value = 400;
+
+      filter3.type = "bandpass";
+      filter3.frequency.value = 1500;
+
+      lfo3.frequency.value = 6;
+      lfoGain3.gain.value = 400;
+
+      adsr3.gain.value = 0;
+
+      mainOsc3.connect(filter3);
+      filter3.connect(adsr3);
+      adsr3.connect(ctx.destination);
+
+      lfo3.connect(lfoGain3);
+      lfoGain3.connect(filter3.frequency);
+
+      mainOsc3.start();
+      lfo3.start();
+
+      const adsrSwell3 = function () {
+        mainOsc3.frequency.value = Math.random() * 400 + 600;
+
+        ctx.resume();
+
+        let now = ctx.currentTime;
+
+        adsr3.gain.cancelScheduledValues(now);
+        adsr3.gain.setValueAtTime(0, now);
+        adsr3.gain.linearRampToValueAtTime(0.3, now + 1.5);
+        adsr3.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+      };
+
+      document.getElementById("Start3").addEventListener("click", adsrSwell3);
+
+      document.getElementById("range3").addEventListener("input", function () {
+        lfoGain3.gain.value = this.value;
+      });
+
+      document.getElementById("cutoff3").addEventListener("input", function () {
+        filter3.frequency.value = this.value;
+      });
+    </script>
+  </body>
 </html>
